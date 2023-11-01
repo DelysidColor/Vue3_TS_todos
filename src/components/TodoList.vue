@@ -4,51 +4,37 @@
       v-for="todo in todos"
       :key="todo.id"
       :todo="todo"
-      @toggleTodo="toggleTodo" />
+      @toggleTodo="toggleTodo"
+      @removeTodo="removeTodo" />
   </ul>
 </template>
 
 <script lang="ts">
 import { Todo } from "@/types/Todo";
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import TodoItem from "@/components/TodoItem.vue";
-
-interface State {
-  todos: Todo[];
-}
 
 export default defineComponent({
   components: {
     TodoItem,
   },
-  data(): State {
-    return {
-      todos: [
-        {
-          id: 0,
-          text: "Learn the basics of Typescript",
-          completed: true,
-        },
-        {
-          id: 1,
-          text: "Learn Nuxt",
-          completed: false,
-        },
-        {
-          id: 2,
-          text: "Find the Job",
-          completed: false,
-        },
-      ],
-    };
+  props: {
+    todos: {
+      type: Array as PropType<Todo[]>,
+      required: true,
+    },
   },
   methods: {
     toggleTodo(id: number) {
-      const targetTodo = this.todos.find((todo: Todo) => todo.id === id);
-      if (targetTodo) {
-        targetTodo.completed = !targetTodo.completed;
-      }
+      this.$emit("toggleTodo", id);
     },
+    removeTodo(id: number) {
+      this.$emit("removeTodo", id);
+    },
+  },
+  emits: {
+    toggleTodo: (id: number) => Number.isInteger(id),
+    removeTodo: (id: number) => Number.isInteger(id),
   },
 });
 </script>
